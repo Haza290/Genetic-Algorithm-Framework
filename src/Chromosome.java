@@ -4,5 +4,4 @@ public interface Chromosome {
     public void mutate();
     public float getFitness();
 
-
 }
