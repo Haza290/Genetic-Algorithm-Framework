@@ -14,7 +14,7 @@ public class Population {
 
     public Population(){
 		for(int i = 0; i < populationSize; i++){
-			currentPopulation.add(new HelloWorldChromosome());
+			currentPopulation.add(Settings.chromosome.buildChromosome());
 		}
     }
 

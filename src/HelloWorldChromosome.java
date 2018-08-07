@@ -6,6 +6,7 @@ public class HelloWorldChromosome implements Chromosome {
 
     private final String textGene;
     private static String TARGET = "helloworld";
+    private float fitness;
 
     @Override
     public Chromosome mate(Chromosome partner) {
@@ -15,6 +16,11 @@ public class HelloWorldChromosome implements Chromosome {
                 ((HelloWorldChromosome) partner).getTextGene().substring(textGene.length()/2);
 
         return new HelloWorldChromosome(childTextGene);
+    }
+
+    @Override
+    public Chromosome buildChromosome() {
+        return new HelloWorldChromosome();
     }
 
     @Override
@@ -28,15 +34,16 @@ public class HelloWorldChromosome implements Chromosome {
         final int randomGeneIndex = textGeneCharArray.length;
 
         // Adds or subtracts 1 char value from one of the letters
-        textGeneCharArray[rand.nextInt(randomGeneIndex)] = (char)((textGeneCharArray[rand.nextInt(randomGeneIndex)] + offset) % 26);
+        textGeneCharArray[rand.nextInt(randomGeneIndex)] = (char)((textGeneCharArray[rand.nextInt(randomGeneIndex)] + offset)); // TODO rewrite this so it wraps around the alapbet
+        generateFitnessScore();
     }
 
     @Override
     public float getFitness() {
-        return generateFitnessScore();
+        return fitness;
     }
 
-    private float generateFitnessScore() {
+    private void generateFitnessScore() {
         final char[] textGeneCharArray = this.textGene.toCharArray();
         final char[] targetCharArray = this.TARGET.toCharArray();
 
@@ -45,16 +52,18 @@ public class HelloWorldChromosome implements Chromosome {
             score += abs((int) textGeneCharArray[i] - (int) targetCharArray[i]);
         }
 
-        return score;
+        this.fitness = score;
     }
 
 
     public HelloWorldChromosome(){
         this.textGene = generateRandomString();
+        generateFitnessScore();
     }
 
     public HelloWorldChromosome(final String text){
         this.textGene = text;
+        generateFitnessScore();
     }
 
     private String generateRandomString() {
