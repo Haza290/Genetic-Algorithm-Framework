@@ -5,7 +5,7 @@ import static java.lang.Math.abs;
 public class HelloWorldChromosome implements Chromosome {
 
     private final String textGene;
-    private static String TARGET = "hello world";
+    private static String TARGET = "helloworld";
 
     @Override
     public Chromosome mate(Chromosome partner) {
@@ -61,9 +61,9 @@ public class HelloWorldChromosome implements Chromosome {
         final char[] charArray = new char[TARGET.length()];
         final Random rand = new Random();
         for(int i = 0; i < charArray.length; i++) {
-            charArray[i] = (char)rand.nextInt(26);
+            charArray[i] = (char)(rand.nextInt(26) + 97);
         }
-        return charArray.toString();
+        return String.valueOf(charArray);
     }
 
     public String getTextGene() {

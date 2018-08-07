@@ -2,15 +2,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
+import static java.lang.Math.abs;
+
 public class Population {
 	
-	int populationSize = 100;
-	int mutationChance = 100;
+	int populationSize = 100000;
+	int mutationChance = 10;
 
 	ArrayList<ArrayList<Chromosome>> populationHistory = new ArrayList<>();
     ArrayList<Chromosome> currentPopulation = new ArrayList<>();
 
-    public Population(Chromosome populationType){
+    public Population(){
 		for(int i = 0; i < populationSize; i++){
 			currentPopulation.add(new HelloWorldChromosome());
 		}
@@ -33,6 +35,10 @@ public class Population {
 				chromosome.mutate();
 			}
 		}
+
+		System.out.println("Next gen average is: " + String.valueOf(getAverageScore()));
+		System.out.println("Next gen best is:    " + String.valueOf(getCurrentBestChromosome().getFitness()));
+
     }
 	
 	private ArrayList<Chromosome> mate(ArrayList<Chromosome> parents) {
@@ -57,5 +63,59 @@ public class Population {
 			}
 		}
 		return offspring;
+	}
+
+	public Chromosome getCurrentBestChromosome(){
+    	Chromosome currentBestChromosome = null;
+    	float currentBestChromosomeScore = 0;
+    	for(int i = 0; i < this.currentPopulation.size(); i++) {
+			Chromosome chromosome = this.currentPopulation.get(i);
+			if(currentBestChromosome == null || chromosome.getFitness() < currentBestChromosomeScore) {
+    			currentBestChromosome = chromosome;
+    			currentBestChromosomeScore = chromosome.getFitness();
+			}
+		}
+		return currentBestChromosome;
+	}
+
+	public Chromosome getCurrentWorstChromosome(){
+		Chromosome currentWorstChromosome = null;
+		float currentBestChromosomeScore = 0;
+		for(int i = 0; i < this.currentPopulation.size(); i++) {
+			Chromosome chromosome = this.currentPopulation.get(i);
+			if(currentWorstChromosome == null || chromosome.getFitness() > currentBestChromosomeScore) {
+				currentWorstChromosome = chromosome;
+				currentBestChromosomeScore = chromosome.getFitness();
+			}
+		}
+		return currentWorstChromosome;
+	}
+
+	public float getAverageScore(){
+    	float totalScore = 0;
+		for (Chromosome chromosome: this.currentPopulation) {
+			totalScore += chromosome.getFitness();
+		}
+
+		return totalScore/this.currentPopulation.size();
+	}
+
+	public Chromosome getCurrentAverageChromosome() {
+
+    	float averageScore = getAverageScore();
+    	Chromosome closestChromosomeToAverage = null;
+    	float distanceFromAverage = 0;
+
+		for(int i = 0; i < this.currentPopulation.size(); i++) {
+
+			Chromosome currentChromosome = this.currentPopulation.get(i);
+			float absCurrentChromosomeDistanceFromAverage = abs(currentChromosome.getFitness() - averageScore);
+			if(closestChromosomeToAverage == null || absCurrentChromosomeDistanceFromAverage < distanceFromAverage) {
+				closestChromosomeToAverage = currentChromosome;
+				distanceFromAverage = absCurrentChromosomeDistanceFromAverage;
+			}
+		}
+
+		return closestChromosomeToAverage;
 	}
 }
