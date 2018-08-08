@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 
 public class UserInterface {
 
-    Population population = new Population();
+    Population population = new Population(Settings.chromosome);
     JPanel bestWorstAveragePanel;
     JFrame mainFrame = new JFrame();
     JLabel bestChromosomeString = new JLabel();
@@ -22,6 +22,7 @@ public class UserInterface {
 
 
         mainFrame.setLayout(new GridLayout(2,2));
+        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         bestWorstAveragePanel = updateBestWorstAveragePanel();
         JPanel graphPanel = new JPanel();

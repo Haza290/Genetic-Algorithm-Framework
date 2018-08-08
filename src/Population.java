@@ -12,9 +12,9 @@ public class Population {
 	ArrayList<ArrayList<Chromosome>> populationHistory = new ArrayList<>();
     ArrayList<Chromosome> currentPopulation = new ArrayList<>();
 
-    public Population(){
+    public Population(Chromosome chromosomeType){
 		for(int i = 0; i < populationSize; i++){
-			currentPopulation.add(Settings.chromosome.buildChromosome());
+			currentPopulation.add(chromosomeType.buildChromosome());
 		}
     }
 
