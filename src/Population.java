@@ -39,36 +39,13 @@ public class Population {
 			}
 		}
 
-		this.currentPopulation.sort();
-
-		// Adds best/average/worst chromosomes to arrays
-		updateBestAverageWorstChromosomes();
+		// Should sort currentPopulation from lowest to highest fitness sort
+		Collections.sort(this.currentPopulation);
 
 		System.out.println("Next gen average is: " + String.valueOf(getAverageScore()));
 		System.out.println("Next gen best is:    " + String.valueOf(getCurrentBestChromosome().getFitness()));
 
     }
-
-    private void updateBestAverageWorstChromosomes() {
-
-    	boolean isFittness = false;
-
-    	Chromosome bestChromosome = null;
-		Chromosome averageChromosome = null;
-		Chromosome worstChromosome = null;
-
-		float bestScore = 0;
-		float averageScore = 0;
-		float worstScore = 0;
-
-		for(int i = 0; i < this.currentPopulation.size(); i++) {
-
-			this.currentPopulation.sort();
-			if(null == bestChromosome || bestScore )
-
-		}
-
-	}
 	
 	private ArrayList<Chromosome> mate(ArrayList<Chromosome> parents) {
 		
