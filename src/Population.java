@@ -9,8 +9,11 @@ public class Population {
 	int populationSize = 100000;
 	int mutationChance = 10;
 
+	ArrayList<Chromosome> currentPopulation = new ArrayList<>();
 	ArrayList<ArrayList<Chromosome>> populationHistory = new ArrayList<>();
-    ArrayList<Chromosome> currentPopulation = new ArrayList<>();
+	ArrayList<Chromosome> bestChromosomesHistory = new ArrayList<>();
+	ArrayList<Chromosome> averageChromosomesHistory = new ArrayList<>();
+	ArrayList<Chromosome> worstChromosomesHistory = new ArrayList<>();
 
     public Population(Chromosome chromosomeType){
 		for(int i = 0; i < populationSize; i++){
@@ -36,10 +39,36 @@ public class Population {
 			}
 		}
 
+		this.currentPopulation.sort();
+
+		// Adds best/average/worst chromosomes to arrays
+		updateBestAverageWorstChromosomes();
+
 		System.out.println("Next gen average is: " + String.valueOf(getAverageScore()));
 		System.out.println("Next gen best is:    " + String.valueOf(getCurrentBestChromosome().getFitness()));
 
     }
+
+    private void updateBestAverageWorstChromosomes() {
+
+    	boolean isFittness = false;
+
+    	Chromosome bestChromosome = null;
+		Chromosome averageChromosome = null;
+		Chromosome worstChromosome = null;
+
+		float bestScore = 0;
+		float averageScore = 0;
+		float worstScore = 0;
+
+		for(int i = 0; i < this.currentPopulation.size(); i++) {
+
+			this.currentPopulation.sort();
+			if(null == bestChromosome || bestScore )
+
+		}
+
+	}
 	
 	private ArrayList<Chromosome> mate(ArrayList<Chromosome> parents) {
 		

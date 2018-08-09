@@ -15,11 +15,12 @@ public class UserInterface {
         new UserInterface();
     }
 
+    public void updateMainScreen(){
+
+
+    }
+
     public UserInterface() {
-
-        HelloWorldChromosome test = (HelloWorldChromosome)population.getCurrentBestChromosome();
-        System.out.println("best text: " + test.getTextGene());
-
 
         mainFrame.setLayout(new GridLayout(2,2));
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -36,6 +37,7 @@ public class UserInterface {
 
         mainFrame.pack();
         mainFrame.setVisible(true);
+
     }
 
 
