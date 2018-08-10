@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.Random;
 
 import static java.lang.Math.abs;
@@ -9,27 +9,21 @@ public class Population {
 	int populationSize = 100000;
 	int mutationChance = 10;
 
-	ArrayList<Chromosome> currentPopulation = new ArrayList<>();
 	ArrayList<ArrayList<Chromosome>> populationHistory = new ArrayList<>();
-	ArrayList<Chromosome> bestChromosomesHistory = new ArrayList<>();
-	ArrayList<Chromosome> averageChromosomesHistory = new ArrayList<>();
-	ArrayList<Chromosome> worstChromosomesHistory = new ArrayList<>();
 
     public Population(Chromosome chromosomeType){
+		ArrayList<Chromosome> currentPopulation = new ArrayList<>();
 		for(int i = 0; i < populationSize; i++){
 			currentPopulation.add(chromosomeType.buildChromosome());
 		}
+		populationHistory.add(currentPopulation);
     }
 
     public void nextGeneration(){
-		
-		// add a record of currentPopulation to history array
-		populationHistory.add(currentPopulation);
-		
-		// Pick breeding chomosomes and mate them
-		Tornament tornament = new Tornament();
-        ArrayList<Chromosome> parents = tornament.selectWinners(currentPopulation);
-		currentPopulation = mate(parents);
+
+    	// Select winners
+        ArrayList<Chromosome> parents = Settings.selection.selectWinners(this.populationHistory.get(this.populationHistory.size() - 1));
+		ArrayList<Chromosome> currentPopulation = mate(parents);
 		
 		// Mutate 1 in mutateChance chromosomes
 		Random rand = new Random();
@@ -40,11 +34,9 @@ public class Population {
 		}
 
 		// Should sort currentPopulation from lowest to highest fitness sort
-		Collections.sort(this.currentPopulation);
+		currentPopulation.sort(Comparator.naturalOrder());
 
-		System.out.println("Next gen average is: " + String.valueOf(getAverageScore()));
-		System.out.println("Next gen best is:    " + String.valueOf(getCurrentBestChromosome().getFitness()));
-
+		populationHistory.add(currentPopulation);
     }
 	
 	private ArrayList<Chromosome> mate(ArrayList<Chromosome> parents) {
@@ -63,65 +55,50 @@ public class Population {
 			offspring.add(parent2.mate(parent1));
 			
 			count++;
-			if(count >= populationSize) {
+			if(count >= parents.size()) {
 				offset++;
 				count = 0;
+				if(offset >= parents.size() - 1) {
+					offset = 1;
+				}
 			}
 		}
 		return offspring;
 	}
 
-	public Chromosome getCurrentBestChromosome(){
-    	Chromosome currentBestChromosome = null;
-    	float currentBestChromosomeScore = 0;
-    	for(int i = 0; i < this.currentPopulation.size(); i++) {
-			Chromosome chromosome = this.currentPopulation.get(i);
-			if(currentBestChromosome == null || chromosome.getFitness() < currentBestChromosomeScore) {
-    			currentBestChromosome = chromosome;
-    			currentBestChromosomeScore = chromosome.getFitness();
-			}
-		}
-		return currentBestChromosome;
-	}
-
-	public Chromosome getCurrentWorstChromosome(){
-		Chromosome currentWorstChromosome = null;
-		float currentBestChromosomeScore = 0;
-		for(int i = 0; i < this.currentPopulation.size(); i++) {
-			Chromosome chromosome = this.currentPopulation.get(i);
-			if(currentWorstChromosome == null || chromosome.getFitness() > currentBestChromosomeScore) {
-				currentWorstChromosome = chromosome;
-				currentBestChromosomeScore = chromosome.getFitness();
-			}
-		}
-		return currentWorstChromosome;
-	}
-
-	public float getAverageScore(){
-    	float totalScore = 0;
-		for (Chromosome chromosome: this.currentPopulation) {
-			totalScore += chromosome.getFitness();
+	public double getAverageScore(){
+		return getAverageScore(this.populationHistory.size() - 1);
 		}
 
-		return totalScore/this.currentPopulation.size();
+	public double getAverageScore(int generation){
+		return this.populationHistory.get(generation).stream().mapToDouble(Chromosome::getFitness).average().orElse(-1D);
 	}
 
-	public Chromosome getCurrentAverageChromosome() {
+	public Chromosome getAverageChromosome() {
+    	return getAverageChromosome(this.populationHistory.size() - 1);
+	}
 
-    	float averageScore = getAverageScore();
-    	Chromosome closestChromosomeToAverage = null;
-    	float distanceFromAverage = 0;
+	public Chromosome getAverageChromosome(int generation) {
 
-		for(int i = 0; i < this.currentPopulation.size(); i++) {
+    	ArrayList<Chromosome> generationArray = this.populationHistory.get(generation);
 
-			Chromosome currentChromosome = this.currentPopulation.get(i);
-			float absCurrentChromosomeDistanceFromAverage = abs(currentChromosome.getFitness() - averageScore);
-			if(closestChromosomeToAverage == null || absCurrentChromosomeDistanceFromAverage < distanceFromAverage) {
-				closestChromosomeToAverage = currentChromosome;
-				distanceFromAverage = absCurrentChromosomeDistanceFromAverage;
+    	int lowerIndex = 0;
+    	int upperIndex = generationArray.size();
+    	double averageFitness = getAverageScore();
+
+		while (lowerIndex + 1 != upperIndex){
+    		int midPoint = (upperIndex + lowerIndex) / 2;
+    		if(generationArray.get(midPoint).getFitness() < averageFitness){
+    			lowerIndex = midPoint;
+			} else {
+    			upperIndex = midPoint;
 			}
 		}
 
-		return closestChromosomeToAverage;
+		if(averageFitness - generationArray.get(lowerIndex).getFitness() < generationArray.get(upperIndex).getFitness() - averageFitness) {
+    		return generationArray.get(lowerIndex);
+		} else {
+    		return generationArray.get(upperIndex);
+		}
 	}
 }

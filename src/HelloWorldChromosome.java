@@ -6,7 +6,7 @@ public class HelloWorldChromosome implements Chromosome {
 
     private final String textGene;
     private static String TARGET = "helloworld";
-    private float fitness;
+    private double fitness;
 
     @Override
     public Chromosome mate(Chromosome partner) {
@@ -39,7 +39,7 @@ public class HelloWorldChromosome implements Chromosome {
     }
 
     @Override
-    public float getFitness() {
+    public double getFitness() {
         return fitness;
     }
 
