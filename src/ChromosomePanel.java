@@ -6,10 +6,10 @@ public abstract class ChromosomePanel {
 
     public ChromosomePanel() {}
 
-    public abstract ChromosomePanel(Chromosome chromosome);
+    //public abstract ChromosomePanel(Chromosome chromosome);
 
     public ChromosomePanel build(Chromosome chromosome) {
-        return
+        return null;
     }
 
     public JPanel getPanel() {

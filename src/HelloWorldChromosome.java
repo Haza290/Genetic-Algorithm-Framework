@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.Random;
 
 import static java.lang.Math.abs;
@@ -41,6 +42,11 @@ public class HelloWorldChromosome implements Chromosome {
     @Override
     public double getFitness() {
         return fitness;
+    }
+
+    @Override
+    public JPanel getJPanel() {
+return null;
     }
 
     private void generateFitnessScore() {

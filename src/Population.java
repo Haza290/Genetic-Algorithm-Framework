@@ -1,22 +1,33 @@
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Random;
-
-import static java.lang.Math.abs;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Population {
 	
-	int populationSize = 100000;
-	int mutationChance = 10;
+	private int POPULATION_SIZE = 100000;
+	private int MUTATION_CHANCE = 10;
 
-	ArrayList<ArrayList<Chromosome>> populationHistory = new ArrayList<>();
+	private ArrayList<ArrayList<Chromosome>> populationHistory = new ArrayList<>();
 
     public Population(Chromosome chromosomeType){
 		ArrayList<Chromosome> currentPopulation = new ArrayList<>();
-		for(int i = 0; i < populationSize; i++){
+		for(int i = 0; i < POPULATION_SIZE; i++){
 			currentPopulation.add(chromosomeType.buildChromosome());
 		}
+
 		populationHistory.add(currentPopulation);
+
+		// TODO return to parallelising the process
+		// Parallel stream generating population
+//		ArrayList<Chromosome> streamGeneratedArrayList = Stream.generate(chromosomeType::buildChromosome)
+//				.limit(POPULATION_SIZE)
+//				.parallel()
+//				.collect(Collectors.toCollection(ArrayList::new));
+//
+//		populationHistory.add(streamGeneratedArrayList);
+
     }
 
     public void nextGeneration(){
@@ -28,7 +39,7 @@ public class Population {
 		// Mutate 1 in mutateChance chromosomes
 		Random rand = new Random();
 		for(Chromosome chromosome : currentPopulation){
-			if(rand.nextInt(mutationChance) == 0){
+			if(rand.nextInt(MUTATION_CHANCE) == 0){
 				chromosome.mutate();
 			}
 		}
@@ -38,7 +49,8 @@ public class Population {
 
 		populationHistory.add(currentPopulation);
     }
-	
+
+    // TODO come back to parallelising this method
 	private ArrayList<Chromosome> mate(ArrayList<Chromosome> parents) {
 		
 		ArrayList<Chromosome> offspring = new ArrayList<>();
@@ -46,7 +58,7 @@ public class Population {
 		int offset = 1;
 		int count = 0;
 		
-		while(offspring.size() < populationSize){
+		while(offspring.size() < POPULATION_SIZE){
 			
 			Chromosome parent1 = parents.get(count);
 			Chromosome parent2 = parents.get((count + offset) % parents.size());
@@ -63,8 +75,10 @@ public class Population {
 				}
 			}
 		}
+
 		return offspring;
 	}
+
 
 	public double getAverageScore(){
 		return getAverageScore(this.populationHistory.size() - 1);
